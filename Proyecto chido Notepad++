@@ -1,23 +1,4 @@
-
-Skip to content
-Using Gmail with screen readers
-1 of 317
-Proyecto David Asaf
-David Hernández Aznar <dae.aznar@gmail.com>
-	
-AttachmentsAug 8, 2019, 8:07 PM (13 hours ago)
-	
-to martin.univa
-
-
--- 
-DAHA:
-Attachments area
-	
-	
-	
-
-﻿#include <iostream>
+#include <iostream>
 #include <iomanip>
 #include <ctime>
 
