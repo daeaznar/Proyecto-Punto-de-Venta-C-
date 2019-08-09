@@ -1,5 +1,25 @@
-#include <iostream>
+
+Skip to content
+Using Gmail with screen readers
+1 of 317
+Proyecto David Asaf
+David Hernández Aznar <dae.aznar@gmail.com>
+	
+AttachmentsAug 8, 2019, 8:07 PM (13 hours ago)
+	
+to martin.univa
+
+
+-- 
+DAHA:
+Attachments area
+	
+	
+	
+
+﻿#include <iostream>
 #include <iomanip>
+#include <ctime>
 
 using namespace std;
 
@@ -22,6 +42,13 @@ void Mostrar_u();
 void Ventas();
 string cliente[100] = {};
 int total_venta_prod [100] = {};
+int total_vendedor[100] = {};
+int gran_total;
+int check_sell = 0;
+int subtotal_2[100] = {};
+int cantidad[100] = {};
+int egresos_vendedor[100]={};
+int egresos_total;
 
 void Verify_admin();
 void Verify_seller();
@@ -32,7 +59,7 @@ int pc[100] = {10, 10, 10, 10, 10};
 int pv[100] = {11, 11, 15, 20, 11};
 int existencia [100] = {12, 23, 20, 20, 10};
 int nr[100] = {8, 5, 5, 2, 3};
-int st[100] = {1, 1, 1, 0, 1};
+int st[100] = {1, 1, 1, 1, 1};
 int total = 5;
 
 int buscar_a(string admin);
@@ -54,7 +81,11 @@ int i_ba;
 int i_bv;
 
 int main() {
+    int i;
+    int j;
     int opc;
+    time_t tSac = time(NULL);
+    struct tm* tmP = localtime(&tSac);
     do {
         cout << "Menú\n";
         cout << "1. Administrador\n";
@@ -83,7 +114,29 @@ int main() {
                 break;
             }
                 break;
-            case 3: cout << "Cerrando sistema\n";
+            case 3:
+            {
+                if (check_sell == 1) {
+                    for (j = 0; j < total_seller; j++){
+                        gran_total = total_vendedor[j] + gran_total;
+                        egresos_total=egresos_vendedor[j]+egresos_total;
+                    }
+                    cout << setw(30) << "Abarrotes El Tocho\n";
+                    cout << setw(30) << "RFC: TOC980615EL1\n";
+                    cout << setw(30) << "Ticket de Venta\n";
+                    cout << setw(40) << "Hora: " << tmP->tm_hour << ":" << tmP->tm_min << ":" << tmP->tm_sec << endl;
+                    cout << setw(40) << "Fecha: " << tmP->tm_mday << "/" << tmP->tm_mon + 1 << "/" << tmP->tm_year + 1900 << endl;
+                    cout << endl;
+                    cout << "Producto" << setw(10) << "Cantidad" << setw(16) << "Precio Unitario" << setw(10) << "Subtotal\n";
+                    for (i = 0; i < total; i++)
+                        if (st[i] == 1 && cantidad[i] > 0)
+                            cout << setw(8) << producto[i] << setw(10) << cantidad[i] << setw(16) << pv[i] << setw(10) << subtotal_2[i] << endl;
+                    cout << setw(41) << "Gran Total: $" << gran_total << endl;
+                    cout<<endl;
+                    cout<<"Utilidades: $"<<gran_total-egresos_total;
+                }
+                cout << "Cerrando sistema\n";
+            }
                 break;
             default: cout << "Opción inválida\n";
         }
@@ -436,7 +489,11 @@ void Consultas() {
             i = pos;
             cout << "Resultados del producto: " << producto[i] << endl;
             cout << setw(6) << "ID" << setw(12) << "Producto" << setw(6) << "PC" << setw(6) << "PV" << setw(14) << "Existencia" << setw(6) << "NR" << endl;
-            cout << setw(5) << id[i] << setw(12) << producto[i] << setw(7) << pc[i] << setw(6) << pv[i] << setw(9) << existencia[i] << setw(11) << nr[i] << endl;
+            cout << setw(5) << id[i] << setw(12) << producto[i] << setw(7) << pc[i] << setw(6) << pv[i] << setw(9) << existencia[i] << setw(11) << nr[i];
+            if (existencia[i] <= nr[i])
+                cout << "*\n";
+            else
+                cout << endl;
         }
     }
 }
@@ -567,8 +624,13 @@ void Inventario() {
                     }
             cout << setw(6) << "ID" << setw(12) << "Producto" << setw(6) << "PC" << setw(6) << "PV" << setw(14) << "Existencia" << setw(6) << "NR" << endl;
             for (j = 0; j < k; j++) {
-                if (st[j] == 1)
-                    cout << setw(5) << id[j] << setw(12) << producto[j] << setw(7) << pc[j] << setw(6) << pv[j] << setw(9) << existencia[j] << setw(11) << nr[j] << endl;
+                if (st[j] == 1) {
+                    cout << setw(5) << id[j] << setw(12) << producto[j] << setw(7) << pc[j] << setw(6) << pv[j] << setw(9) << existencia[j] << setw(11) << nr[j];
+                    if (existencia[j] <= nr[j])
+                        cout << "*\n";
+                    else
+                        cout << endl;
+                }
             }
             while (true) {
                 cout << "Presione ''*'' para salir\n";
@@ -607,9 +669,15 @@ void Inventario() {
                         st[j] = temp_st;
                     }
             cout << setw(6) << "ID" << setw(12) << "Producto" << setw(6) << "PC" << setw(6) << "PV" << setw(14) << "Existencia" << setw(6) << "NR" << endl;
-            for (j = 0; j < k; j++)
-                if (st[j] == 1)
-                    cout << setw(5) << id[j] << setw(12) << producto[j] << setw(7) << pc[j] << setw(6) << pv[j] << setw(9) << existencia[j] << setw(11) << nr[j] << endl;
+            for (j = 0; j < k; j++) {
+                if (st[j] == 1) {
+                    cout << setw(5) << id[j] << setw(12) << producto[j] << setw(7) << pc[j] << setw(6) << pv[j] << setw(9) << existencia[j] << setw(11) << nr[j];
+                    if (existencia[j] <= nr[j])
+                        cout << "*\n";
+                    else
+                        cout << endl;
+                }
+            }
             while (true) {
                 cout << "Presione ''*'' para salir\n";
                 cin>>salir;
@@ -1278,18 +1346,15 @@ void Ventas() {
     int opc;
     int cant;
     int subtotal[100] = {};
-    int subtotal_2[100] = {};
-    int cantidad[100] = {};
-    int ventas_prod;
     int suma_subtotal;
     string nombre;
+    int total_cliente[100] = {};
     cout << "Menú Ventas\n";
     while (true) {
         cout << "Ingrese nombre del cliente: ";
         cin >> cliente[c];
         if (cliente[c] == "*")
             break;
-        ventas_prod = 0;
         suma_subtotal = 0;
         while (true) {
             cout << "Ingrese producto a vender: ";
@@ -1307,7 +1372,6 @@ void Ventas() {
                 cout << "No hay existencia disponible de este producto\n";
             else {
                 i = pos;
-                cout << i;
                 cout << "Ingrese cantidad a vender: ";
                 cin>>cant;
                 if (cant > existencia[i]) {
@@ -1320,7 +1384,6 @@ void Ventas() {
                             case 1:
                             {
                                 subtotal[i] = existencia[i] * pv[i];
-                                ventas_prod++;
                                 cantidad[i] = existencia[i] + cantidad[i];
                                 existencia[i] = 0;
                             }
@@ -1328,26 +1391,31 @@ void Ventas() {
                             case 2:
                                 break;
                             default:
-                                cout << "Opción Inválida";
+                                cout << "Opción Inválida\n";
                         }
                     } while (opc > 2);
                 } else {
                     subtotal[i] = cant * pv[i];
                     existencia[i] = existencia[i] - cant;
-                    ventas_prod++;
                     cantidad[i] = cant + cantidad[i];
                 }
+                subtotal_2[i] = subtotal[i] + subtotal_2[i];
+                suma_subtotal = subtotal[i] + suma_subtotal;
             }
-            subtotal_2[i] = subtotal[i] + subtotal_2[i];
-            suma_subtotal = subtotal[i] + suma_subtotal;
         }
-        cout << "Cliente: " << cliente[c] << endl;
-        cout << "Vendedor: " << user_seller[i_bv] << endl;
-        cout << "Producto" << setw(10) << "Cantidad" << setw(16) << "Precio Unitario" << setw(10) << "Subtotal\n";
-        for (i = 0; i < total; i++)
-            if (st[i] == 1 && cantidad[i] > 0)
-                cout << setw(6) << producto[i] << setw(10) << cantidad[i] << setw(16) << pv[i] << setw(10) << subtotal_2[i] << endl;
-        cout << setw(40) << "Total: $" << suma_subtotal << endl;
+        total_cliente[c] = suma_subtotal;
         c++;
+        check_sell = 1;
     }
+    for (j = 0; j != c; j++){
+        total_vendedor[i_bv] = total_cliente[j] + total_vendedor[i_bv];
+        egresos_vendedor[i_bv]=cantidad[i]*pc[i];
+    }
+    cout << endl;
+    cout << "Vendedor: " << user_seller[i_bv] << endl;
+    cout << "Producto" << setw(10) << "Cantidad" << setw(16) << "Precio Unitario" << setw(10) << "Subtotal\n";
+    for (i = 0; i < total; i++)
+        if (st[i] == 1 && cantidad[i] > 0)
+            cout << setw(8) << producto[i] << setw(10) << cantidad[i] << setw(16) << pv[i] << setw(10) << subtotal_2[i] << endl;
+    cout << setw(41) << "Total: $" << total_vendedor[i_bv] << endl;
 }
