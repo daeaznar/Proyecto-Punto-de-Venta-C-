@@ -1,0 +1,23 @@
+do {
+        cout << "¿El usuario a dar de Baja es Administador o Vendedor?\n";
+        cout << "1. Administrador\n";
+        cout << "2. Vendedor\n";
+        cout << "3. Regresar\n";
+        cin>>opc;
+        switch (opc) {
+            case 1:
+            {
+                
+            }
+                break;
+            case 2:
+            {
+            
+            }
+                break;
+            case 3:
+                break;
+            default: cout << "Opción Inválida\n";
+        }
+        break;
+    } while (opc != 3);
